@@ -1,0 +1,1 @@
+/home/catstrong/.config/fisherman/bass/functions/__bass.py
