@@ -1,0 +1,247 @@
+# I3 config file (v4)
+# Please see http://i3wm.org/docs/userguide.html for a complete reference!
+
+
+#Powerline desired font
+font pango:Source Code Pro for Powerline 8
+
+set $mod Mod4
+
+# Configure border style <normal|1pixel|pixel xx|none|pixel>
+for_window [class="\w*"] border none 
+new_float normal
+
+# Hide borders
+hide_edge_borders none 
+
+# change borders
+bindsym $mod+b border normal 
+bindsym $mod+n border none 
+
+exec "setxkbmap -option ctrl:nocaps"
+
+set $ws1 "1:1 💻 "
+set $ws2 "2:2 🌍"
+set $ws3 "3:3 ⌨"
+
+# # switch to workspace
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+
+#new_window normal 1
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+# switch to workspace
+bindsym $mod+4 workspace 4
+bindsym $mod+5 workspace 5
+bindsym $mod+6 workspace 6
+bindsym $mod+7 workspace 7
+bindsym $mod+8 workspace 8
+bindsym $mod+9 workspace 9
+bindsym $mod+0 workspace 10
+
+# move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2 
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace 4
+bindsym $mod+Shift+5 move container to workspace 5
+bindsym $mod+Shift+6 move container to workspace 6
+bindsym $mod+Shift+7 move container to workspace 7
+bindsym $mod+Shift+8 move container to workspace 8
+bindsym $mod+Shift+9 move container to workspace 9
+bindsym $mod+Shift+0 move container to workspace 10
+
+# change focus
+bindsym $mod+h focus left; mode "default"
+bindsym $mod+j focus down; mode "default"
+bindsym $mod+k focus up; mode "default"
+bindsym $mod+l focus right; mode "default"
+
+# move focused window
+bindsym $mod+Shift+b move left
+bindsym $mod+Shift+n move down
+bindsym $mod+Shift+p move up
+bindsym $mod+Shift+f move right
+
+# kill focused window
+bindsym $mod+e kill
+
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen
+
+# Make the currently focused window a scratchpad
+bindsym $mod+Shift+plus mark "scratch1", move scratchpad
+
+# Show the first scratchpad window
+bindsym $mod+minus [con_mark="scratch0"] scratchpad show
+bindsym $mod+plus [con_mark="scratch1"] scratchpad show
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle; mode "default"
+
+# change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle; mode "default"
+
+# start a terminal XXX: warning kitty not always installed
+bindsym $mod+Return exec kitty #i3-sensible-terminal
+
+
+# start dmenu (a program launcher)
+# bindcode 133 exec --no-startup-id synapse
+# There also is the (new) i3-dmenu-desktop which only displays applications
+# shipping a .desktop file. It is a wrapper around dmenu, so you need that
+# installed.
+bindsym $mod+r exec --no-startup-id j4-dmenu-desktop
+
+# move output
+bindsym $mod+comma move workspace to output left
+bindsym $mod+period move workspace to output right
+
+# split in horizontal orientation
+bindsym $mod+Shift+h split h
+
+# split in vertical orientation
+bindsym $mod+Shift+v split v
+
+# change container layout (stacked, tabbed, toggle split)
+bindsym $mod+s layout stacked
+bindsym $mod+Shift+s layout toggle split
+
+# focus the parent container
+bindsym $mod+a focus parent
+
+# focus the child container
+bindsym $mod+d focus child
+
+# reload the configuration file
+Bindsym $mod+Shift+c reload
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+
+bindsym $mod+Print exec shot
+#bindsym Shift+Print exec scrot '%s.png' -e 'simg -r $f'
+#bindsym $mod+Shift+Print exec scrot '%s.png' -e 'simg -r $f' -s
+
+# Sreen brightness controls
+bindsym XF86MonBrightnessUp exec "xbacklight -inc 10"
+bindsym XF86MonBrightnessDown exec "xbacklight -dec 10"
+
+#For no x-keys
+bindsym Shift+Home exec "xbacklight -inc 10"
+bindsym Shift+End exec "xbacklight -dec 10"
+
+# Touchpad controls
+bindsym XF86AudioRaiseVolume exec "pactl set-sink-volume alsa_output.pci-0000_00_1b.0.analog-stereo +5%"
+bindsym XF86AudioLowerVolume exec "pactl set-sink-volume alsa_output.pci-0000_00_1b.0.analog-stereo -5%"
+bindsym XF86AudioMute exec "amixer sset Master toggle, killall -USR1 i3status"
+bindsym Scroll_Lock exec "amixer sset Master toggle; killall -USR1 i3status"
+#bindsym 0xff0d exec "amixer sset Master toggle; killall -USR1 i3status"
+
+bindsym $mod+Ctrl+l resize shrink width 1 px or 1 ppt
+bindsym $mod+Ctrl+j resize grow height 1 px or 1 ppt
+bindsym $mod+Ctrl+k resize shrink height 1 px or 1 ppt
+bindsym $mod+Ctrl+h resize grow width 1 px or 1 ppt
+
+set $leftOrient "xrandr -o left" 
+set $rightOrient "xrandr -o right" 
+set $normalOrient "xrandr -o normal"
+
+#Rotate screen
+#bindsym XF86RotateWindows exec $rightOrient 
+
+# Colors
+set $blue 	#1b1e26
+set $yellow	#f0d48b
+set $grey	#b0b287
+set $green	#789073
+
+# Start i3bar to display a workspace bar (plus the system information i3status finds out, if available)
+bar {
+  status_command i3status
+  position bottom
+  strip_workspace_numbers yes
+
+  #font pango: Source Code Pro for Powerline, FontAwesome Regular, Icons 9
+  #font pango:UbuntuMono-regular 12
+
+
+  colors {
+		# My colors
+		background 			$blue
+		statusline 			$yellow
+		separator  			$green
+		
+		focused_workspace	$blue	$blue	$yellow
+		active_workspace	$blue	$blue	$yellow
+		inactive_workspace	$blue	$blue	$green
+		urgent_workspace	$blue	$blue	$grey	  
+	}
+}
+
+
+# Theme colors
+# class                 border  backgr. text    indic.  child_border
+#client.focused          #808280 #808280 #80FFF9 #FDF6E3
+#client.focused_inactive #434745 #434745 #16A085 #454948
+#client.unfocused        #434745 #434745 #16A085 #454948
+#client.urgent           #CB4B16 #FDF6E3 #16A085 #268BD2
+#client.placeholder      #000000 #0c0c0c #ffffff #000000 #0c0c0c
+client.background       #2B2C2B
+
+# My colors
+client.focused		      	$yellow 	$blue		$yellow		$yellow		$yellow
+client.focused_inactive		$yellow		$blue		$grey		$yellow		$yellow	
+client.unfocused	      	$yellow		$blue		$grey		$yellow		$yellow
+client.urgent		        $yellow		$blue		$yellow		$yellow		$yellow
+client.placeholder	    	$yellow		$blue		$yellow		$yellow 	$yellow
+#client.background			$blue		$blue		$blue		$blue		$blue
+
+
+
+### Settings for i3-gaps: 
+# Set inner/outer gaps
+#gaps inner 10
+#gaps outer -4
+
+set $Locker i3lock && sleep 1
+
+# Create Log out, Reboot, Poweroff bindings
+set $lockModeName "Exit (L)ockdown, (R)eboot, (P)oweroff, (E)xit"
+mode $lockModeName {
+    bindsym $mod+r exec systemctl reboot
+    bindsym $mod+l exec --no-startup-id $Locker, mode "default"
+    bindsym $mod+e exec i3-msg exit
+    bindsym $mod+p exec sudo shutdown now
+
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+Shift+e mode $lockModeName
+
+
+for_window [class="Crossover"] floating enable
+for_window [class="Desmume"] floating enable
+for_window [class="feh"] floating enable
+for_window [class="Gvbam"] floating enable
+for_window [class="Pidgin"] floating enable
+for_window [class="Steam"] floating enable
+for_window [class="Synapse"] border none
+for_window [class="Wine"] floating enable
+for_window [class="XMathematica"] floating enable
+for_window [instance="XMathematica"] floating enable
+for_window [class="KanColleTool"] floating enable
+for_window [class="Qjackctl"] floating enable
+
+for_window [instance="chromium"] border none
+for_window [class="google-chrome"] border none
+for_window [instance="google-chrome"] border none
+for_window [instance="crx_nckgahadagoaajjgafhacjanaoiihapd"] floating enable
+for_window [instance="crx_fahmaaghhglfmonjliepjlchgpgfmobi"] floating enable
+for_window [instance="dropdown"] mark "term", move scratchpad, resize set 1920 810, move absolute position 0 0
+
+exec --no-startup-id nm-applet
