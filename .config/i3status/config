@@ -28,7 +28,7 @@ wireless _first_ {
 
 ethernet _first_ {
 	# if you use %speed, i3status requires root privileges
-	format_up = "[%bitrate / %frequency] %ip"#"🔌 %ip (%speed)"
+	format_up = "🔌 [%bitrate / %frequency]  %ip " 
 	
 	format_down = "🔌ETH"
 }
