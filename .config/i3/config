@@ -1,7 +1,6 @@
 # I3 config file (v4)
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
-
 #Powerline desired font
 font pango:Source Code Pro for Powerline 8
 
@@ -87,7 +86,7 @@ bindsym $mod+Shift+space floating toggle; mode "default"
 bindsym $mod+space focus mode_toggle; mode "default"
 
 # start a terminal XXX: warning kitty not always installed
-bindsym $mod+Return exec kitty #i3-sensible-terminal
+bindsym $mod+Return exec i3-sensible-terminal 
 
 
 # start dmenu (a program launcher)
@@ -117,6 +116,11 @@ bindsym $mod+a focus parent
 # focus the child container
 bindsym $mod+d focus child
 
+# Inspect memory
+bindsym $mod+i exec i3-sensible-terminal htop
+#bindsym $mod+i exec i3-sensible-terminal top
+
+
 # reload the configuration file
 Bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
@@ -126,19 +130,16 @@ bindsym $mod+Print exec shot
 #bindsym Shift+Print exec scrot '%s.png' -e 'simg -r $f'
 #bindsym $mod+Shift+Print exec scrot '%s.png' -e 'simg -r $f' -s
 
-# Sreen brightness controls
-bindsym XF86MonBrightnessUp exec "xbacklight -inc 10"
-bindsym XF86MonBrightnessDown exec "xbacklight -dec 10"
-
 #For no x-keys
 bindsym Shift+Home exec "xbacklight -inc 10"
 bindsym Shift+End exec "xbacklight -dec 10"
 
+
 # Touchpad controls
-bindsym XF86AudioRaiseVolume exec "pactl set-sink-volume alsa_output.pci-0000_00_1b.0.analog-stereo +5%"
-bindsym XF86AudioLowerVolume exec "pactl set-sink-volume alsa_output.pci-0000_00_1b.0.analog-stereo -5%"
-bindsym XF86AudioMute exec "amixer sset Master toggle, killall -USR1 i3status"
-bindsym Scroll_Lock exec "amixer sset Master toggle; killall -USR1 i3status"
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl -- set-sink-volume 0 +5% #increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl -- set-sink-volume 0 -5% #decrease sound volume
+bindsym XF86AudioMute exec --nVo-startup-id pactl set-sink-mute 0 toggle # mute sound
+
 #bindsym 0xff0d exec "amixer sset Master toggle; killall -USR1 i3status"
 
 bindsym $mod+Ctrl+l resize shrink width 1 px or 1 ppt
@@ -166,7 +167,7 @@ bar {
   strip_workspace_numbers yes
 
   #font pango: Source Code Pro for Powerline, FontAwesome Regular, Icons 9
-  #font pango:UbuntuMono-regular 12
+  font pango:UbuntuMono-regular 12
 
 
   colors {
@@ -212,10 +213,10 @@ set $Locker i3lock && sleep 1
 # Create Log out, Reboot, Poweroff bindings
 set $lockModeName "Exit (L)ockdown, (R)eboot, (P)oweroff, (E)xit"
 mode $lockModeName {
-    bindsym $mod+r exec systemctl reboot
+    bindsym $mod+r exec sudo reboot
     bindsym $mod+l exec --no-startup-id $Locker, mode "default"
     bindsym $mod+e exec i3-msg exit
-    bindsym $mod+p exec sudo shutdown now
+    bindsym $mod+p exec sudo shutdown 
 
     # back to normal: Enter or Escape
     bindsym Return mode "default"
