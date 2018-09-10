@@ -1,0 +1,3 @@
+#!/bin/kitty
+#Kitty script dependent
+kitty +kitten icat $(catgif)
