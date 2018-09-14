@@ -1,0 +1,5 @@
+#!/bin/sh
+img_url="$(curl -s -X GET "http://api.giphy.com/v1/gifs/random?tag=cat&api_key=dc6zaTOxFJmzC&limit=1" | python3 -m json.tool | grep -Po '"image_url": *\K"[^"]*"')"
+eval curl -s -X GET $img_url -o  ${1:-/tmp/cat.gif}
+echo  ${1:-/tmp/cat.gif}
+
