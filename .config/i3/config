@@ -208,7 +208,7 @@ client.placeholder	    	$yellow		$blue		$yellow		$yellow 	$yellow
 #gaps inner 10
 #gaps outer -4
 
-set $Locker i3lock && sleep 1
+set $Locker blurlock && sleep 1
 
 # Create Log out, Reboot, Poweroff bindings
 set $lockModeName "Exit (L)ockdown, (R)eboot, (P)oweroff, (E)xit"
@@ -246,3 +246,4 @@ for_window [instance="crx_fahmaaghhglfmonjliepjlchgpgfmobi"] floating enable
 for_window [instance="dropdown"] mark "term", move scratchpad, resize set 1920 810, move absolute position 0 0
 
 exec --no-startup-id nm-applet
+exec_always --no-startup-id xfce4-power-manager
