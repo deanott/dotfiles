@@ -6,7 +6,7 @@ CMD="$1"
 DOTFILES_DIR=$(pwd)
 BACKUP_DIR=~/.dotfiles.orig
 
-dotfiles=(.zshrc .ssh .aliases .bashrc .vimrc .Xresources .dircolors )
+dotfiles=(.zshrc .ssh .aliases .bashrc .vimrc .Xresources .dircolors .git-templates)
 dotfiles_config=(kitty git i3 i3status fish )
 
 # Make utilities available
