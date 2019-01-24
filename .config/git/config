@@ -8,6 +8,7 @@
 [core]
 	pager = less -x2
 	editor = vim
+	hooksPath = ~/.git-templates/hooks/
 [merge]
 	tool = meld
 [branch]
@@ -26,6 +27,6 @@
 	review-local = " ! git lg @ {push} .. "
 	where = remote -v
 [credential]
-	helper = cache --timeout=900
+	helper = cache --timeout=3000
 [init]
 	templatedir = ~/.git-templates
