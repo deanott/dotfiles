@@ -8,6 +8,9 @@ shift + alt - space : chunkc tiling::window --toggle float
 alt - e : chunkc tiling::desktop --layout bsp
 alt - s : chunkc tiling::desktop --layout monocle
 
+# open a new terminal
+alt - return : /Applications/iTerm.app/Contents/MacOS/iTerm2 --single-instance -d ~
+
 # kill focused window
 shift + alt - q : chunkc tiling::window --close
 
@@ -19,6 +22,12 @@ alt - l : chunkc tiling::window --focus east
 
 alt - p : chunkc tiling::window --focus prev
 alt - n : chunkc tiling::window --focus next
+
+ctrl + alt - l: chunkc tiling:monitor -f prev
+ctrl + alt - h: chunkc tiling:monitor -f next 
+
+shift + alt - p: chunkc tiling::window --send-to-monitor prev; chunkc tiling::monitor -f prev
+shift + alt - n : chunkc tiling::window --send-to-monitor next; chunkc tiling::monitor -f next
 
 # move focused window
 shift + alt - a : chunkc tiling::window --warp west
