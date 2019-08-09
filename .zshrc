@@ -26,6 +26,7 @@ plugins=(
 	zsh-syntax-highlighting
 	zsh-nvm
 	kubectl
+	diff-so-fancy
 )
 
 #Environment exports
