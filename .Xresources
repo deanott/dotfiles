@@ -1,0 +1,20 @@
+  
+*background:                        #5188A5                  
+*foreground:                        #BF7B71                  
+
+*fading:                            15
+*fadeColor:                         black
+*cursorColor:                       #16A085
+*pointerColorBackground:            #2B2C2B
+*pointerColorForeground:            #16A085
+
+!! core colours
+*blue:                              #518F9C
+*yellow:                            #FBE7C6
+*grey:                              #353D49
+*green:                             #69A59E
+*red:                               #EB4545
+*purple:                            #CCB8D1
+
+
+URxvt*internalBorder: 2

@@ -19,23 +19,24 @@ HIST_STAMPS="yyyy-mm-dd"
 # Plugins.
 plugins=(
     zsh-autosuggestions
-    archive
     extract
     git
     ubuntu
 	zsh-syntax-highlighting
 	zsh-nvm
 	kubectl
-	diff-so-fancy
 )
 
 #Environment exports
 export ZSH="$HOME/.oh-my-zsh"
 
-export PATH="$PATH:$HOME/bin/"
+export PATH="$PATH:$HOME/bin/:/usr/bin"
 
-# Oh My Zsh time!
-source "$ZSH"/oh-my-zsh.sh
+
+# Oh My Zsh time! Guarded: omz is a git install, not a package, so on a fresh
+# box this file gets sourced before it exists -- unguarded that's a hard error
+# on every shell start.
+[ -f "$ZSH/oh-my-zsh.sh" ] && source "$ZSH"/oh-my-zsh.sh
 
 # Aliases.
 source ~/.aliases
@@ -56,6 +57,17 @@ zsh_stats(){
 pj() {
     python3 -m json.tool
 }
+
+jsonless() {
+  if [ -t 0 ]; then
+    # If input is from terminal, use file argument
+    jq . "$1" | less -R
+  else
+    # If input is piped
+    jq . | less -R
+  fi
+}
+
 
 id_active_window() {
     xprop -root | awk '/_NET_ACTIVE_WINDOW\(WINDOW\)/{print $NF}'
@@ -89,3 +101,40 @@ precmd () {
         fi
     fi
 }
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# `[[ /usr/bin/kubectl ]]` was a non-empty-string test -- true unconditionally,
+# whether or not kubectl is installed. Test for the command itself, matching
+# the `command -v tmux` idiom above.
+command -v kubectl >/dev/null 2>&1 && source <(kubectl completion zsh)
+
+# Guarded like omz and fzf: pyenv is not in essential.txt, so on a fresh box
+# this hard-errors on every shell start.
+command -v pyenv >/dev/null 2>&1 && eval "$(pyenv init -)"
+
+export PATH=$PATH:${GOPATH:-$HOME/go}/bin
+
+export CLIPMENU_LAUNCHER="rofi -dmenu -theme clipmenu-center"
+export CM_LAUNCHER=rofi
+
+export PATH="$HOME/.nvm/versions/node/v22.11.0/bin:$PATH"
+
+# The next line updates PATH for the Google Cloud SDK.
+# Double-quoted, not single as gcloud writes it -- $HOME does not expand in ''.
+if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/google-cloud-sdk/path.zsh.inc"; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/google-cloud-sdk/completion.zsh.inc"; fi
+export PATH="$HOME/.local/bin:$PATH"
+
+# Host-specific ssh aliases live in ~/.zshrc.local (untracked) -- this repo
+# is public and has no business naming my boxes.
+[ -f "$HOME/.zshrc.local" ] && . "$HOME/.zshrc.local"
+
+# opencode
+export PATH="$HOME/.opencode/bin:$PATH"
+
+
+# Added by Antigravity CLI installer
+export PATH="$HOME/.local/bin:$PATH"

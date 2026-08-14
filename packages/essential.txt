@@ -1,0 +1,55 @@
+# Packages these dotfiles actually depend on.
+#
+# This is the curated list: install it and the configs in this repo work.
+# native.txt / aur.txt are full dumps of this machine, kept for reference --
+# cherry-pick from those, do not install them wholesale onto a new box.
+#
+#   sudo pacman -S --needed - < packages/essential.txt
+#
+# Not covered here -- these install outside pacman:
+#   fzf         -> ~/.fzf        (git)
+#   oh-my-zsh   -> ~/.oh-my-zsh  (git; .zshrc sources it, degrades if absent)
+#   copycat-ui  -> ~/.cargo/bin  (cargo; i3 starts it via scripts/startup/copycat.sh)
+
+# --- window manager / bar / notifications
+i3-wm
+i3status
+dunst
+rofi
+
+# --- terminal + shell
+kitty
+zsh
+
+# --- X utilities the i3 config and scripts call
+xorg-xprop
+xorg-xmodmap
+xorg-setxkbmap
+xorg-xrandr
+xclip
+xdotool
+feh
+slop
+
+# --- tray / screenshot / clipboard / display
+snixembed
+flameshot
+clipmenu
+redshift
+network-manager-applet
+
+# --- audio
+libpulse
+
+# --- git tooling referenced by .config/git/config
+git
+diff-so-fancy
+gnupg
+
+# --- misc CLI used by aliases and shell functions
+jq
+vim
+
+# neofetch is NOT here: upstream archived it and Arch dropped it from the
+# repos, so it only survives via the AUR (see aur.txt). fastfetch is the
+# maintained replacement and is in extra/ if you want it on a new machine.

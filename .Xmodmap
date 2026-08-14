@@ -1,0 +1,6 @@
+! Super/Win keys for mod4
+keycode 133 = Super_L NoSymbol Super_L
+keycode 134 = Super_R NoSymbol Super_R
+keycode 206 = NoSymbol Super_L NoSymbol Super_L
+clear mod4
+add mod4 = Super_L Super_R

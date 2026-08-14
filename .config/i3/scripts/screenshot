@@ -1,0 +1,105 @@
+#!/bin/bash
+f="/tmp/Screenshot-$(date -Iseconds | cut -d+ -f1).png"
+
+copy_to_clipboard() {
+    xclip -selection clipboard -t image/png -i "$1"
+}
+
+# Flameshot only works once its background daemon owns the DBus name. If we
+# fire a capture before then, the request is dropped -- that's the "have to
+# start it twice" behaviour. i3 autostarts the daemon; this is the safety net
+# for a cold start or a crashed daemon.
+flameshot_ready() {
+    command -v flameshot >/dev/null 2>&1 || return 1
+
+    # --acquired matters: a bare `busctl list` also reports the name as
+    # (activatable) when nothing is actually running yet.
+    daemon_up() {
+        busctl --user list --acquired 2>/dev/null | grep -q '^org\.flameshot\.Flameshot'
+    }
+
+    daemon_up && return 0
+
+    pgrep -x flameshot >/dev/null 2>&1 || flameshot >/dev/null 2>&1 &
+    for _ in $(seq 1 20); do
+        sleep 0.15
+        daemon_up && return 0
+    done
+    return 1
+}
+
+# Get the geometry of the monitor under the mouse cursor
+get_active_monitor_geometry() {
+    local mouse
+    mouse=$(xdotool getmouselocation --shell 2>/dev/null)
+    local MOUSE_X MOUSE_Y
+    eval "$mouse"
+    MOUSE_X=${X:-0}
+    MOUSE_Y=${Y:-0}
+
+    while IFS= read -r geo; do
+        local W H MON_X MON_Y
+        W=$(echo "$geo" | cut -dx -f1)
+        H=$(echo "$geo" | cut -dx -f2 | cut -d+ -f1)
+        MON_X=$(echo "$geo" | cut -d+ -f2)
+        MON_Y=$(echo "$geo" | cut -d+ -f3)
+        if [ "$MOUSE_X" -ge "$MON_X" ] && [ "$MOUSE_X" -lt "$((MON_X + W))" ] && \
+           [ "$MOUSE_Y" -ge "$MON_Y" ] && [ "$MOUSE_Y" -lt "$((MON_Y + H))" ]; then
+            echo "${W}x${H}+${MON_X}+${MON_Y}"
+            return
+        fi
+    done < <(xrandr --query | grep ' connected' | grep -oP '\d+x\d+\+\d+\+\d+')
+}
+
+aborted=0
+
+if [ "$1" = "full" ]; then
+    # flameshot screen defaults to the monitor containing the cursor
+    if flameshot_ready; then
+        flameshot screen --raw > "$f" 2>/dev/null
+    fi
+
+    if [ ! -s "$f" ]; then
+        geo=$(get_active_monitor_geometry)
+        if [ -n "$geo" ]; then
+            maim -g "$geo" "$f"
+        else
+            maim "$f"
+        fi
+    fi
+else
+    if flameshot_ready; then
+        flameshot gui --raw > "$f" 2>/dev/null
+        # Empty output here means the user pressed Esc, not a failure -- don't
+        # fall through to slop and make them select the region a second time.
+        [ -s "$f" ] || aborted=1
+    fi
+
+    if [ "$aborted" = 0 ] && [ ! -s "$f" ]; then
+        # slop: draw crosshair/rubber-band on any monitor, capture that selection
+        sel=$(slop -f "%x %y %w %h" 2>/dev/null) || { rm -f "$f"; exit 0; }
+        read -r SX SY SW SH <<< "$sel"
+        [ "$SW" -gt 0 ] && [ "$SH" -gt 0 ] || { rm -f "$f"; exit 0; }
+        maim -g "${SW}x${SH}+${SX}+${SY}" "$f"
+    fi
+fi
+
+if [ ! -s "$f" ]; then
+    rm -f "$f"
+    exit 0
+fi
+
+copy_to_clipboard "$f"
+
+# Optionally mirror the shot to a remote box so it's available there too.
+# The destination lives in an untracked local file -- one line, scp target
+# form, e.g. "somehost:/tmp/" -- so this repo names no machine of mine. No
+# file, no upload.
+#
+# BatchMode: never block on a passphrase/host-key prompt -- there's no TTY
+# behind an i3 keybinding, so a prompt would hang this forever.
+dest_file="${XDG_CONFIG_HOME:-$HOME/.config}/screenshot-upload"
+if [ -r "$dest_file" ]; then
+    dest=$(head -n1 "$dest_file")
+    [ -n "$dest" ] && scp -q -o BatchMode=yes -o ConnectTimeout=5 "$f" "$dest" 2>/dev/null &
+fi

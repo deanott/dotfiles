@@ -64,3 +64,18 @@ if [ -x /usr/bin/dircolors ]; then
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
 fi
+
+alias code='code-insiders' 
+
+alias rpass='tr -dc A-Za-z0-9 </dev/urandom | head -c 17 ; echo '''
+# quick tokenised with newlines - | sort | head |
+# alias qtoken='tr -sc 'A-Aa-z' '\n' < | tr 'A-z' 'a-z''
+
+# count
+# alias count= uniq -c
+#
+#
+# alias privacyfilter='{ IFS= read -r isOn && echo "$isOn" >/proc/acpi/ibm/lcdshadow; } <<<'
+
+
+alias privacyfilter='echo -n "Enter 1 (enable) or 0 (disable): " && read -r isOn && echo "$isOn" | sudo tee /proc/acpi/ibm/lcdshadow'

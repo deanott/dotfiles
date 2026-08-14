@@ -1,12 +1,13 @@
 [user]
 	name = Dean P. Ottewell
-	email = dean.p.ottewell@gmail.com
+	email = 20297406+deanott@users.noreply.github.com
+	signingkey = 880A5D97B629955F
 [color]
 	ui = auto
 [push]
 	default = current
 [core]
-	pager = less -x2
+	pager = diff-so-fancy | less --tabs=4 -RFX
 	editor = vim
 	hooksPath = ~/.git-templates/hooks/
 [merge]
@@ -30,3 +31,6 @@
 	helper = cache --timeout=3000
 [init]
 	templatedir = ~/.git-templates
+	defaultBranch = main
+[commit]
+	gpgsign = true

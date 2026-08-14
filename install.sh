@@ -6,8 +6,11 @@ CMD="$1"
 DOTFILES_DIR=$(pwd)
 BACKUP_DIR=~/.dotfiles.orig
 
-dotfiles=(.zshrc .ssh .aliases .bashrc .vimrc .Xresources .dircolors .git-templates)
-dotfiles_config=(kitty git i3 i3status fish )
+# NOTE: .ssh is deliberately NOT here. This repo is public, so ssh config must
+# never live in it -- and because install() does `rm -rf ~/<entry>` before
+# symlinking, listing something absent from the repo would destroy ~/.ssh.
+dotfiles=(.zshrc .aliases .bashrc .vimrc .Xresources .Xmodmap .dircolors .git-templates)
+dotfiles_config=(kitty git i3 i3status fish dunst redshift neofetch sakura)
 
 # Make utilities available
 PATH="$DOTFILES_DIR/bin:$PATH"
@@ -52,8 +55,14 @@ install() {
     fi
 
     # Install config.
+    # Guard: never rm -rf a target whose source is missing from the repo,
+    # otherwise a stale array entry silently deletes real data in $HOME.
     for dots in "${dotfiles[@]}"
     do
+        if ! [ -e "$DOTFILES_DIR/${dots}" ]; then
+            echo -e $red"skip ${dots}: not in repo"$white >&2
+            continue
+        fi
         /bin/rm -rf ~/${dots}
         /bin/ln -fs "$DOTFILES_DIR/${dots}" ~/
     done
@@ -62,12 +71,28 @@ install() {
     mkdir -p ~/.config
     for dots_conf in "${dotfiles_config[@]}"
     do
+        if ! [ -e "$DOTFILES_DIR/.config/${dots_conf}" ]; then
+            echo -e $red"skip .config/${dots_conf}: not in repo"$white >&2
+            continue
+        fi
         /bin/rm -rf ~/.config/${dots_conf[@]//./}
         /bin/ln -fs "$DOTFILES_DIR/.config/${dots_conf}" ~/.config/${dots_conf[@]//./}
     done
 
     echo -e $blue"New dotfiles is installed!\n"$white >&2
     echo "There may be some errors when Terminal is restarted." >&2
+}
+
+packages() {
+    # Curated list only -- what these dotfiles actually need.
+    # native.txt / aur.txt are full dumps of the old machine; cherry-pick from
+    # them by hand rather than installing 272 packages onto a fresh box.
+    # pacman reads one target per line from stdin and does NOT understand
+    # comments -- feeding it the file raw makes it look for a package called
+    # "# Packages these dotfiles actually depend on." Strip comments/blanks.
+    grep -vE '^[[:space:]]*(#|$)' "$DOTFILES_DIR/packages/essential.txt" \
+        | sudo pacman -S --needed -
+    echo -e $blue"Not covered by pacman: fzf (git install into ~/.fzf)"$white >&2
 }
 
 case "$CMD" in
@@ -77,7 +102,10 @@ case "$CMD" in
     -r)
         uninstall
         ;;
+    -p)
+        packages
+        ;;
     *)
-        echo "Command not found. Commands -i install and -r unistall" >&2
+        echo "Command not found. Commands -i install, -r uninstall, -p packages" >&2
         exit 1
 esac

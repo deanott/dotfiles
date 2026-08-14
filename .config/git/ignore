@@ -95,3 +95,8 @@ npm-debug.log*
 
 # Dependency directories
 node_modules/
+**/.claude/settings.local.json
+
+**/.claude/settings.local.json
+
+**/.claude/settings.local.json
